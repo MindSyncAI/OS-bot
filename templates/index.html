@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java OOP Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Dark Theme (Default) - Java OOP Themed */
+            --primary-color: #e67e22;
+            --secondary-color: #c0392b;
+            --gradient-start: #2c3e50;
+            --gradient-mid: #34495e;
+            --gradient-end: #e67e22;
+            --bot-message-bg: rgba(35, 45, 55, 0.9);
+            --user-message-bg: linear-gradient(135deg, #e67e22, #d35400, #c0392b);
+            --text-color: #eceff1;
+            --secondary-text-color: #b0bec5;
+            --bg-color: #1a1a1a;
+            --chat-bg: rgba(35, 45, 55, 0.7);
+            --border-color: #445566;
+            --shadow-color: rgba(230, 126, 34, 0.3);
+            --header-bg: rgba(35, 45, 55, 0.9);
+            --input-bg: rgba(35, 45, 55, 0.9);
+            --chip-bg: rgba(35, 45, 55, 0.9);
+            --chip-hover-bg: rgba(230, 126, 34, 0.3);
+            --network-dots: rgba(230, 126, 34, 0.8);
+            --network-lines: rgba(230, 126, 34, 0.4);
+            --glow-primary: rgba(230, 126, 34, 0.8);
+            --glow-secondary: rgba(192, 57, 43, 0.8);
+        }
+
+        .light-theme {
+            /* Light Theme - Java OOP Themed */
+            --primary-color: #d35400;
+            --secondary-color: #e67e22;
+            --gradient-start: #ecf0f1;
+            --gradient-mid: #fdedec;
+            --gradient-end: #e67e22;
+            --bot-message-bg: rgba(236, 240, 241, 0.9);
+            --user-message-bg: linear-gradient(135deg, #ffeaa7, #fdcb6e, #e67e22);
+            --text-color: #2c3e50;
+            --secondary-text-color: #7f8c8d;
+            --bg-color: #f5f7fa;
+            --chat-bg: rgba(255, 255, 255, 0.8);
+            --border-color: #fdebd0;
+            --shadow-color: rgba(211, 84, 0, 0.2);
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --chip-bg: rgba(236, 240, 241, 0.9);
+            --chip-hover-bg: rgba(230, 126, 34, 0.2);
+            --network-dots: rgba(211, 84, 0, 0.8);
+            --network-lines: rgba(211, 84, 0, 0.3);
+            --glow-primary: rgba(211, 84, 0, 0.7);
+            --glow-secondary: rgba(230, 126, 34, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+            opacity: 0.2;
+            z-index: -2;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Gear animations for OOP */
+        .gear {
+            position: absolute;
+            border-radius: 50%;
+            border: 4px solid var(--network-lines);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: rotate 20s linear infinite;
+        }
+
+        .gear::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: var(--network-dots);
+            border-radius: 50%;
+        }
+
+        .gear-tooth {
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background-color: var(--network-lines);
+            border-radius: 3px;
+            transform-origin: center 100px;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Class diagrams for OOP */
+        .class-diagram {
+            position: absolute;
+            background: var(--bot-message-bg);
+            border: 1px solid var(--network-lines);
+            border-radius: 5px;
+            padding: 10px;
+            opacity: 0.6;
+            animation: fadeInOut 10s infinite;
+        }
+
+        .class-header {
+            border-bottom: 1px solid var(--network-lines);
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--network-dots);
+        }
+
+        /* Object nodes and connections */
+        .object-node {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--network-dots);
+            border-radius: 50%;
+            z-index: 0;
+            animation: objectPulse 4s infinite;
+            box-shadow: 0 0 10px var(--glow-primary);
+        }
+
+        .inheritance-line {
+            position: absolute;
+            height: 2px;
+            background: var(--network-lines);
+            transform-origin: left center;
+            z-index: -1;
+            animation: inheritancePulse 5s infinite;
+        }
+
+        @keyframes objectPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
+
+        @keyframes inheritancePulse {
+            0%, 100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Method call animations */
+        .method-call {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--glow-secondary);
+            border-radius: 50%;
+            z-index: 0;
+            animation: methodCallMove 6s linear infinite;
+        }
+
+        @keyframes methodCallMove {
+            0% {
+                transform: translate(0, 0) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                transform: translate(var(--end-x), var(--end-y)) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.6; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            height: 100vh;
+            max-height: 800px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 700px;
+            height: 100%;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            background: var(--chat-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+            border: 1px solid var(--network-dots);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #e67e22, #d35400, #c0392b);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            box-shadow: 0 0 15px var(--glow-primary);
+        }
+
+        .chat-icon i {
+            color: white;
+            font-size: 18px;
+        }
+
+        .chat-title h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .chat-title p {
+            font-size: 12px;
+            color: var(--secondary-text-color);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--primary-color);
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--chip-hover-bg);
+            border-color: var(--primary-color);
+        }
+
+        .theme-toggle i {
+            margin-right: 6px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            line-height: 1.5;
+            font-size: 14px;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: var(--bot-message-bg);
+            border-top-left-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-left: 2px solid var(--primary-color);
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--user-message-bg);
+            color: white;
+            border-top-right-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .light-theme .user-message {
+            color: var(--text-color);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--bot-message-bg);
+            border-radius: 15px;
+            border-top-left-radius: 5px;
+            width: fit-content;
+            margin-top: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: typingBounce 1.2s infinite;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        .chat-input-container {
+            padding: 15px 20px;
+            background: var(--header-bg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chip-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .chip-container::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .chip-container::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .chip {
+            padding: 8px 15px;
+            background: var(--chip-bg);
+            border-radius: 20px;
+            font-size: 12px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .chip:hover {
+            background: var(--chip-hover-bg);
+            border-color: var(--primary-color);
+        }
+
+        .input-group {
+            display: flex;
+            position: relative;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            background: var(--input-bg);
+            border-radius: 25px;
+            padding: 12px 45px 12px 15px;
+            font-size: 14px;
+            color: var(--text-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 15px;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .input-icon:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Scrollbar styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .chat-container {
+                max-height: calc(100vh - 20px);
+            }
+
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation" id="backgroundAnimation"></div>
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-icon">
+                        <i class="fab fa-java"></i>
+                    </div>
+                    <div class="chat-title">
+                        <h1>Java OOP Assistant</h1>
+                        <p>Object-Oriented Programming</p>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark</span>
+                </button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    Hello! I'm your Java OOP Assistant. How can I help you with object-oriented programming concepts today?
+                </div>
+                <div class="message user-message">
+                    What are the four pillars of OOP?
+                </div>
+                <div class="message bot-message">
+                    Great question! The four pillars of Object-Oriented Programming are:
+                    
+                    1. Encapsulation: Bundling data (attributes) and methods that operate on the data into a single unit (class) and restricting direct access to some components.
+                    
+                    2. Inheritance: The mechanism by which a class can inherit properties and behaviors from a parent class, enabling code reuse and establishing a hierarchy.
+                    
+                    3. Polymorphism: The ability of objects to take on many forms. In Java, this allows methods to do different things based on the object that it is acting upon.
+                    
+                    4. Abstraction: Hiding implementation details and showing only functionality to the user, focusing on what an object does rather than how it does it.
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <div class="chip-container">
+                    <div class="chip">Inheritance</div>
+                    <div class="chip">Polymorphism</div>
+                    <div class="chip">Encapsulation</div>
+                    <div class="chip">Abstraction</div>
+                    <div class="chip">Design Patterns</div>
+                    <div class="chip">Interfaces</div>
+                </div>
+                <div class="input-group">
+                    <input type="text" class="chat-input" placeholder="Type your message here..." id="messageInput">
+                    <i class="fas fa-paper-plane input-icon" id="sendButton"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        const themeText = themeToggleBtn.querySelector('span');
+        
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            
+            if (document.body.classList.contains('light-theme')) {
+                themeIcon.className = 'fas fa-sun';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeText.textContent = 'Dark';
+            }
+        });
+
+        // Create OOP-themed background elements
+        function createBackgroundElements() {
+            const backgroundAnimation = document.getElementById('backgroundAnimation');
+            
+            // Create gears (representing encapsulation)
+            for (let i = 0; i < 5; i++) {
+                // Create main gear
+                const gear = document.createElement('div');
+                gear.className = 'gear';
+                const size = 80 + Math.random() * 120;
+                gear.style.width = `${size}px`;
+                gear.style.height = `${size}px`;
+                gear.style.left = `${Math.random() * 100}vw`;
+                gear.style.top = `${Math.random() * 100}vh`;
+                gear.style.animationDuration = `${20 + Math.random() * 20}s`;
+                
+                // Direction alternates
+                if (i % 2 === 0) {
+                    gear.style.animationDirection = 'reverse';
+                }
+                
+                // Create gear teeth
+                const teethCount = 8 + Math.floor(Math.random() * 8);
+                for (let j = 0; j < teethCount; j++) {
+                    const tooth = document.createElement('div');
+                    tooth.className = 'gear-tooth';
+                    tooth.style.transform = `rotate(${(j * 360 / teethCount)}deg) translateY(-${size/2}px)`;
+                    gear.appendChild(tooth);
+                }
+                
+                backgroundAnimation.appendChild(gear);
+            }
+            
+            // Create class diagrams (representing class structure)
+            for (let i = 0; i < 4; i++) {
+                const classDiagram = document.createElement('div');
+                classDiagram.className = 'class-diagram';
+                classDiagram.style.width = `${120 + Math.random() * 80}px`;
+                classDiagram.style.left = `${Math.random() * 80}vw`;
+                classDiagram.style.top = `${Math.random() * 80}vh`;
+                classDiagram.style.animationDelay = `${i * 2}s`;
+                
+                const classHeader = document.createElement('div');
+                classHeader.className = 'class-header';
+                
+                // Random class names
+                const classNames = ['Vehicle', 'Animal', 'Shape', 'Person', 'Account', 'Product'];
+                classHeader.textContent = classNames[Math.floor(Math.random() * classNames.length)];
+                
+                classDiagram.appendChild(classHeader);
+                
+                // Add some fields and methods
+                const content = document.createElement('div');
+                content.textContent = '- attributes\n+ methods()';
+                classDiagram.appendChild(content);
+                
+                backgroundAnimation.appendChild(classDiagram);
+            }
+            
+            // Create object nodes and inheritance connections
+            const objectNodes = [];
+            
+            // Create nodes (representing objects)
+            for (let i = 0; i < 15; i++) {
+                const objectNode = document.createElement('div');
+                objectNode.className = 'object-node';
+                const x = 10 + Math.random() * 80;
+                const y = 10 + Math.random() * 80;
+                objectNode.style.left = `${x}vw`;
+                objectNode.style.top = `${y}vh`;
+                objectNode.style.animationDelay = `${Math.random() * 4}s`;
+                backgroundAnimation.appendChild(objectNode);
+                objectNodes.push({ element: objectNode, x, y });
+            }
+            
+            // Create inheritance connections
+            for (let i = 0; i < objectNodes.length; i++) {
+                const sourceNode = objectNodes[i];
+                
+                // Connect to 1-2 random nodes for inheritance
+                const connectionsCount = 1 + Math.floor(Math.random() * 2);
+                
+                for (let j = 0; j < connectionsCount; j++) {
+                    // Select random target node
+                    const targetIndex = Math.floor(Math.random() * objectNodes.length);
+                    if (targetIndex !== i) {
+                        const targetNode = objectNodes[targetIndex];
+                        
+                        // Calculate distance and angle
+                        const dx = targetNode.x - sourceNode.x;
+                        const dy = targetNode.y - sourceNode.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                        
+                        // Create inheritance line
+                        const inheritanceLine = document.createElement('div');
+                        inheritanceLine.className = 'inheritance-line';
+                        inheritanceLine.style.left = `${sourceNode.x}vw`;
+                        inheritanceLine.style.top = `${sourceNode.y}vh`;
+                        inheritanceLine.style.width = `${distance}vw`;
+                        inheritanceLine.style.transform = `rotate(${angle}deg)`;
+                        inheritanceLine.style.animationDelay = `${Math.random() * 5}s`;
+                        backgroundAnimation.appendChild(inheritanceLine);
+                    }
+                }
+            }
+            
+            // Create method calls (animated dots moving between objects)
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createMethodCall();
+                }, i * 3000);
+            }
+            
+            function createMethodCall() {
+                const methodCall = document.createElement('div');
+                methodCall.className = 'method-call';
+                
+                // Random start position
+                const startX = Math.random() * 90;
+                const startY = Math.random() * 90;
+                
+                // Random end position
+                const endX = Math.random() * 90;
+                const endY = Math.random() * 90;
+                
+                methodCall.style.left = `${startX}vw`;
+                methodCall.style.top = `${startY}vh`;
+                methodCall.style.setProperty('--end-x', `${endX - startX}vw`);
+                methodCall.style.setProperty('--end-y', `${endY - startY}vh`);
+                
+                backgroundAnimation.appendChild(methodCall);
+                
+                // Remove after animation completes
+                setTimeout(() => {
+                    backgroundAnimation.removeChild(methodCall);
+                    createMethodCall(); // Create a new one
+                }, 6000);
+            }
+        }
+        
+        // Initialize the background animations
+        createBackgroundElements();
+        
+        // Chat functionality
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const chatMessages = document.getElementById('chatMessages');
+        const chips = document.querySelectorAll('.chip');
+        
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.textContent = message;
+            chatMessages.appendChild(userMessageDiv);
+            
+            // Clear input
+            messageInput.value = '';
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                typingIndicator.appendChild(dot);
+            }
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate bot response after delay
+            setTimeout(() => {
+                // Remove typing indicator
+                chatMessages.removeChild(typingIndicator);
+                
+                // Add bot response
+                const botResponseDiv = document.createElement('div');
+                botResponseDiv.className = 'message bot-message';
+                
+                // Sample Java OOP responses based on keywords
+                const oopResponses = [
+                    "In Java, inheritance is implemented using the 'extends' keyword. It allows a subclass to inherit fields and methods from a superclass, promoting code reuse and establishing an 'is-a' relationship.",
+                    "Polymorphism in Java enables objects to behave differently depending on their runtime type. This is achieved through method overriding and interfaces, making code more flexible and extensible.",
+                    "Encapsulation is implemented in Java by declaring variables as private and providing access through public getter and setter methods, which helps in maintaining data integrity.",
+                    "Abstract classes in Java cannot be instantiated and can contain both abstract and concrete methods. They are useful when you want to define a template for a group of subclasses.",
+                    "Java interfaces define a contract of behaviors that implementing classes must fulfill. They support multiple inheritance of type and are declared using the 'interface' keyword.",
+                    "The 'super' keyword in Java refers to the parent class. It's used to call the parent class constructor or access the parent class's overridden methods and hidden fields."
+                ];
+                
+                botResponseDiv.textContent = oopResponses[Math.floor(Math.random() * oopResponses.length)];
+                chatMessages.appendChild(botResponseDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1500);
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                messageInput.value = chip.textContent;
+                messageInput.focus();
+            });
+        });
+    </script>
+</body>
+</html>
