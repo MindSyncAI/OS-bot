@@ -758,25 +758,34 @@
                 // Remove typing indicator
                 chatMessages.removeChild(typingIndicator);
                 
-                // Add bot response
-                const botResponseDiv = document.createElement('div');
-                botResponseDiv.className = 'message bot-message';
-                
-                // Sample Java OOP responses based on keywords
-                const oopResponses = [
-                    "In Java, inheritance is implemented using the 'extends' keyword. It allows a subclass to inherit fields and methods from a superclass, promoting code reuse and establishing an 'is-a' relationship.",
-                    "Polymorphism in Java enables objects to behave differently depending on their runtime type. This is achieved through method overriding and interfaces, making code more flexible and extensible.",
-                    "Encapsulation is implemented in Java by declaring variables as private and providing access through public getter and setter methods, which helps in maintaining data integrity.",
-                    "Abstract classes in Java cannot be instantiated and can contain both abstract and concrete methods. They are useful when you want to define a template for a group of subclasses.",
-                    "Java interfaces define a contract of behaviors that implementing classes must fulfill. They support multiple inheritance of type and are declared using the 'interface' keyword.",
-                    "The 'super' keyword in Java refers to the parent class. It's used to call the parent class constructor or access the parent class's overridden methods and hidden fields."
-                ];
-                
-                botResponseDiv.textContent = oopResponses[Math.floor(Math.random() * oopResponses.length)];
-                chatMessages.appendChild(botResponseDiv);
-                
-                // Scroll to bottom
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                // Make API call to backend
+                fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Add bot response
+                    const botResponseDiv = document.createElement('div');
+                    botResponseDiv.className = 'message bot-message';
+                    botResponseDiv.textContent = data.answer;
+                    chatMessages.appendChild(botResponseDiv);
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Show error message to user
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'message bot-message';
+                    errorDiv.textContent = 'Sorry, I encountered an error. Please try again.';
+                    chatMessages.appendChild(errorDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                });
             }, 1500);
         }
         

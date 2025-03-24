@@ -1,13 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import FAISS # type: ignore
+from langchain_community.vectorstores import FAISS
 from langchain.memory import ConversationBufferMemory
 import os
 from dotenv import load_dotenv
+import pickle
 
 # Load environment variables
 load_dotenv()
@@ -19,44 +18,28 @@ def initialize_chain():
     # Get API key
     groq_api_key = os.environ.get("GROQ_API_KEY")
     
-    documents = []
-    pdf_files = []
-    
-    # Find all PDF files in the dataset directory
-    for root, _, files in os.walk('dataset'):
-        for file in files:
-            if file.lower().endswith('.pdf'):
-                pdf_files.append(os.path.join(root, file))
-    
-    # Load each PDF file individually
-    for pdf_file in pdf_files:
-        try:
-            loader = PyPDFLoader(pdf_file)
-            documents.extend(loader.load())
-            print(f"Successfully loaded {pdf_file}")
-        except Exception as e:
-            print(f"Error loading {pdf_file}: {e}")
-    
-    if not documents:
-        raise ValueError("No documents were successfully loaded")
-    
-    # Split text into chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    text_chunks = text_splitter.split_documents(documents)
-    
-    # Initialize embeddings
+    # Load pre-computed embeddings
     embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        model_kwargs={'device': "cpu"}
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     
-    # Create vector store
-    vector_store = FAISS.from_documents(text_chunks, embeddings)
+    # Load the vector store from disk with deserialization allowed
+    vector_store = FAISS.load_local(
+        "embeddings", 
+        embeddings,
+        allow_dangerous_deserialization=True  # We trust our own embeddings
+    )
+    
+    # Load metadata
+    with open("embeddings/metadata.pkl", "rb") as f:
+        metadata = pickle.load(f)
+    
+    print(f"Loaded {metadata['num_documents']} documents with {metadata['num_chunks']} chunks")
     
     # Initialize LLM
     llm = ChatGroq(
         api_key=groq_api_key,
-        model_name="mixtral-8x7b-32768",
+        model_name="mistral-saba-24b",
         temperature=0.2,
         max_tokens=4000
     )
@@ -107,4 +90,5 @@ def reset():
     return jsonify({'status': 'success', 'message': 'Conversation reset successfully'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
