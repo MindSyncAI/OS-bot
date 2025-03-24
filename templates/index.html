@@ -3,58 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java OOP Assistant</title>
+    <title>OS Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Dark Theme (Default) - Java OOP Themed */
-            --primary-color: #e67e22;
-            --secondary-color: #c0392b;
+            /* Dark Theme (Default) */
+            --primary-color: #00cec9;
+            --secondary-color: #00a8a5;
             --gradient-start: #2c3e50;
             --gradient-mid: #34495e;
-            --gradient-end: #e67e22;
+            --gradient-end: #00cec9;
             --bot-message-bg: rgba(35, 45, 55, 0.9);
-            --user-message-bg: linear-gradient(135deg, #e67e22, #d35400, #c0392b);
+            --user-message-bg: linear-gradient(135deg, #2c3e50, #34495e, #00cec9);
             --text-color: #eceff1;
             --secondary-text-color: #b0bec5;
             --bg-color: #1a1a1a;
             --chat-bg: rgba(35, 45, 55, 0.7);
             --border-color: #445566;
-            --shadow-color: rgba(230, 126, 34, 0.3);
+            --shadow-color: rgba(0, 206, 201, 0.3);
             --header-bg: rgba(35, 45, 55, 0.9);
             --input-bg: rgba(35, 45, 55, 0.9);
             --chip-bg: rgba(35, 45, 55, 0.9);
-            --chip-hover-bg: rgba(230, 126, 34, 0.3);
-            --network-dots: rgba(230, 126, 34, 0.8);
-            --network-lines: rgba(230, 126, 34, 0.4);
-            --glow-primary: rgba(230, 126, 34, 0.8);
-            --glow-secondary: rgba(192, 57, 43, 0.8);
+            --chip-hover-bg: rgba(0, 206, 201, 0.3);
+            --network-dots: rgba(0, 206, 201, 0.8);
+            --network-lines: rgba(0, 206, 201, 0.4);
+            --glow-primary: rgba(0, 206, 201, 0.8);
+            --glow-secondary: rgba(0, 168, 165, 0.8);
         }
 
         .light-theme {
-            /* Light Theme - Java OOP Themed */
-            --primary-color: #d35400;
-            --secondary-color: #e67e22;
+            /* Light Theme */
+            --primary-color: #00a8a5;
+            --secondary-color: #00cec9;
             --gradient-start: #ecf0f1;
-            --gradient-mid: #fdedec;
-            --gradient-end: #e67e22;
+            --gradient-mid: #d6eaf8;
+            --gradient-end: #00cec9;
             --bot-message-bg: rgba(236, 240, 241, 0.9);
-            --user-message-bg: linear-gradient(135deg, #ffeaa7, #fdcb6e, #e67e22);
+            --user-message-bg: linear-gradient(135deg, #d6eaf8, #ecf0f1, #00cec9);
             --text-color: #2c3e50;
             --secondary-text-color: #7f8c8d;
             --bg-color: #f5f7fa;
             --chat-bg: rgba(255, 255, 255, 0.8);
-            --border-color: #fdebd0;
-            --shadow-color: rgba(211, 84, 0, 0.2);
+            --border-color: #d6eaf8;
+            --shadow-color: rgba(0, 168, 165, 0.2);
             --header-bg: rgba(255, 255, 255, 0.9);
             --input-bg: rgba(255, 255, 255, 0.9);
             --chip-bg: rgba(236, 240, 241, 0.9);
-            --chip-hover-bg: rgba(230, 126, 34, 0.2);
-            --network-dots: rgba(211, 84, 0, 0.8);
-            --network-lines: rgba(211, 84, 0, 0.3);
-            --glow-primary: rgba(211, 84, 0, 0.7);
-            --glow-secondary: rgba(230, 126, 34, 0.7);
+            --chip-hover-bg: rgba(0, 206, 201, 0.2);
+            --network-dots: rgba(0, 168, 165, 0.8);
+            --network-lines: rgba(0, 168, 165, 0.3);
+            --glow-primary: rgba(0, 168, 165, 0.7);
+            --glow-secondary: rgba(0, 206, 201, 0.7);
         }
 
         * {
@@ -97,81 +97,99 @@
             z-index: -1;
         }
 
-        /* Gear animations for OOP */
-        .gear {
+        /* Hexagonal mesh pattern */
+        .hex-container {
             position: absolute;
-            border-radius: 50%;
-            border: 4px solid var(--network-lines);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: rotate 20s linear infinite;
+            flex-wrap: wrap;
         }
 
-        .gear::before {
+        .hex {
+            position: relative;
+            width: 60px;
+            height: 104px;
+            margin: 52px 2px 0;
+            background-color: transparent;
+            border: 1px solid var(--network-lines);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: hexPulse 7s infinite;
+        }
+
+        @keyframes hexPulse {
+            0%, 100% {
+                border-color: var(--network-lines);
+                box-shadow: none;
+            }
+            50% {
+                border-color: var(--network-dots);
+                box-shadow: 0 0 15px var(--network-dots);
+            }
+        }
+
+        /* Circuit lines */
+        .circuit-line {
+            position: absolute;
+            background: var(--network-lines);
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .circuit-line::after {
             content: '';
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background-color: var(--network-dots);
-            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+            background: var(--network-dots);
+            animation: circuitFlow 5s linear infinite;
         }
 
-        .gear-tooth {
+        .circuit-line.horizontal {
+            height: 1px;
+            animation: fadeInOut 8s infinite;
+        }
+
+        .circuit-line.vertical {
+            width: 1px;
+            animation: fadeInOut 8s infinite;
+        }
+
+        @keyframes circuitFlow {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Network graph nodes and connections */
+        .node {
             position: absolute;
             width: 8px;
-            height: 20px;
-            background-color: var(--network-lines);
-            border-radius: 3px;
-            transform-origin: center 100px;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Class diagrams for OOP */
-        .class-diagram {
-            position: absolute;
-            background: var(--bot-message-bg);
-            border: 1px solid var(--network-lines);
-            border-radius: 5px;
-            padding: 10px;
-            opacity: 0.6;
-            animation: fadeInOut 10s infinite;
-        }
-
-        .class-header {
-            border-bottom: 1px solid var(--network-lines);
-            padding-bottom: 5px;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: var(--network-dots);
-        }
-
-        /* Object nodes and connections */
-        .object-node {
-            position: absolute;
-            width: 10px;
-            height: 10px;
+            height: 8px;
             background: var(--network-dots);
             border-radius: 50%;
             z-index: 0;
-            animation: objectPulse 4s infinite;
+            animation: nodePulse 4s infinite;
             box-shadow: 0 0 10px var(--glow-primary);
         }
 
-        .inheritance-line {
+        .connection {
             position: absolute;
-            height: 2px;
+            height: 1px;
             background: var(--network-lines);
             transform-origin: left center;
             z-index: -1;
-            animation: inheritancePulse 5s infinite;
+            animation: connectionPulse 5s infinite;
         }
 
-        @keyframes objectPulse {
+        @keyframes nodePulse {
             0%, 100% {
                 transform: scale(1);
                 opacity: 0.7;
@@ -182,7 +200,7 @@
             }
         }
 
-        @keyframes inheritancePulse {
+        @keyframes connectionPulse {
             0%, 100% {
                 opacity: 0.2;
             }
@@ -191,39 +209,41 @@
             }
         }
 
-        /* Method call animations */
-        .method-call {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: var(--glow-secondary);
-            border-radius: 50%;
-            z-index: 0;
-            animation: methodCallMove 6s linear infinite;
-        }
-
-        @keyframes methodCallMove {
-            0% {
-                transform: translate(0, 0) scale(0.5);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            90% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            100% {
-                transform: translate(var(--end-x), var(--end-y)) scale(0.5);
-                opacity: 0;
-            }
-        }
-
         @keyframes fadeInOut {
             0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.6; }
+            50% { opacity: 0.7; }
+        }
+
+        .glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow-secondary) 0%, transparent 70%);
+            opacity: 0.6;
+            filter: blur(10px);
+            animation: moveCircle 30s linear infinite;
+        }
+
+        @keyframes moveCircle {
+            0% {
+                transform: translate(calc(100vw * var(--random-x-start)), calc(100vh * var(--random-y-start))) scale(var(--random-scale-start));
+                opacity: var(--random-opacity-start);
+            }
+            25% {
+                transform: translate(calc(100vw * var(--random-x-mid1)), calc(100vh * var(--random-y-mid1))) scale(var(--random-scale-mid));
+                opacity: var(--random-opacity-mid);
+            }
+            50% {
+                transform: translate(calc(100vw * var(--random-x-mid2)), calc(100vh * var(--random-y-mid2))) scale(var(--random-scale-mid));
+                opacity: var(--random-opacity-start);
+            }
+            75% {
+                transform: translate(calc(100vw * var(--random-x-mid3)), calc(100vh * var(--random-y-mid3))) scale(var(--random-scale-mid));
+                opacity: var(--random-opacity-mid);
+            }
+            100% {
+                transform: translate(calc(100vw * var(--random-x-end)), calc(100vh * var(--random-y-end))) scale(var(--random-scale-end));
+                opacity: var(--random-opacity-end);
+            }
         }
 
         .container {
@@ -277,7 +297,7 @@
         .chat-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #e67e22, #d35400, #c0392b);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -505,16 +525,17 @@
 </head>
 <body>
     <div class="background-animation" id="backgroundAnimation"></div>
+    <div class="hex-container" id="hexGrid"></div>
     <div class="container">
         <div class="chat-container">
             <div class="chat-header">
                 <div class="chat-header-info">
                     <div class="chat-icon">
-                        <i class="fab fa-java"></i>
+                        <i class="fas fa-microchip"></i>
                     </div>
                     <div class="chat-title">
-                        <h1>Java OOP Assistant</h1>
-                        <p>Object-Oriented Programming</p>
+                        <h1>OS Assistant</h1>
+                        <p>Operating Systems</p>
                     </div>
                 </div>
                 <button class="theme-toggle" id="themeToggle">
@@ -524,31 +545,17 @@
             </div>
             <div class="chat-messages" id="chatMessages">
                 <div class="message bot-message">
-                    Hello! I'm your Java OOP Assistant. How can I help you with object-oriented programming concepts today?
-                </div>
-                <div class="message user-message">
-                    What are the four pillars of OOP?
-                </div>
-                <div class="message bot-message">
-                    Great question! The four pillars of Object-Oriented Programming are:
-                    
-                    1. Encapsulation: Bundling data (attributes) and methods that operate on the data into a single unit (class) and restricting direct access to some components.
-                    
-                    2. Inheritance: The mechanism by which a class can inherit properties and behaviors from a parent class, enabling code reuse and establishing a hierarchy.
-                    
-                    3. Polymorphism: The ability of objects to take on many forms. In Java, this allows methods to do different things based on the object that it is acting upon.
-                    
-                    4. Abstraction: Hiding implementation details and showing only functionality to the user, focusing on what an object does rather than how it does it.
+                    Hello! I'm your OS Assistant. How can I help you with operating systems today?
                 </div>
             </div>
             <div class="chat-input-container">
                 <div class="chip-container">
-                    <div class="chip">Inheritance</div>
-                    <div class="chip">Polymorphism</div>
-                    <div class="chip">Encapsulation</div>
-                    <div class="chip">Abstraction</div>
-                    <div class="chip">Design Patterns</div>
-                    <div class="chip">Interfaces</div>
+                    <div class="chip">Process Management</div>
+                    <div class="chip">Memory Management</div>
+                    <div class="chip">File Systems</div>
+                    <div class="chip">Scheduling</div>
+                    <div class="chip">System Calls</div>
+                    <div class="chip">Virtualization</div>
                 </div>
                 <div class="input-group">
                     <input type="text" class="chat-input" placeholder="Type your message here..." id="messageInput">
@@ -576,93 +583,68 @@
             }
         });
 
-        // Create OOP-themed background elements
+        // Create background elements
         function createBackgroundElements() {
             const backgroundAnimation = document.getElementById('backgroundAnimation');
+            const hexGrid = document.getElementById('hexGrid');
             
-            // Create gears (representing encapsulation)
-            for (let i = 0; i < 5; i++) {
-                // Create main gear
-                const gear = document.createElement('div');
-                gear.className = 'gear';
-                const size = 80 + Math.random() * 120;
-                gear.style.width = `${size}px`;
-                gear.style.height = `${size}px`;
-                gear.style.left = `${Math.random() * 100}vw`;
-                gear.style.top = `${Math.random() * 100}vh`;
-                gear.style.animationDuration = `${20 + Math.random() * 20}s`;
-                
-                // Direction alternates
-                if (i % 2 === 0) {
-                    gear.style.animationDirection = 'reverse';
-                }
-                
-                // Create gear teeth
-                const teethCount = 8 + Math.floor(Math.random() * 8);
-                for (let j = 0; j < teethCount; j++) {
-                    const tooth = document.createElement('div');
-                    tooth.className = 'gear-tooth';
-                    tooth.style.transform = `rotate(${(j * 360 / teethCount)}deg) translateY(-${size/2}px)`;
-                    gear.appendChild(tooth);
-                }
-                
-                backgroundAnimation.appendChild(gear);
+            // Create hexagonal grid
+            for (let i = 0; i < 40; i++) {
+                const hex = document.createElement('div');
+                hex.className = 'hex';
+                hex.style.animationDelay = `${Math.random() * 7}s`;
+                hexGrid.appendChild(hex);
             }
             
-            // Create class diagrams (representing class structure)
-            for (let i = 0; i < 4; i++) {
-                const classDiagram = document.createElement('div');
-                classDiagram.className = 'class-diagram';
-                classDiagram.style.width = `${120 + Math.random() * 80}px`;
-                classDiagram.style.left = `${Math.random() * 80}vw`;
-                classDiagram.style.top = `${Math.random() * 80}vh`;
-                classDiagram.style.animationDelay = `${i * 2}s`;
-                
-                const classHeader = document.createElement('div');
-                classHeader.className = 'class-header';
-                
-                // Random class names
-                const classNames = ['Vehicle', 'Animal', 'Shape', 'Person', 'Account', 'Product'];
-                classHeader.textContent = classNames[Math.floor(Math.random() * classNames.length)];
-                
-                classDiagram.appendChild(classHeader);
-                
-                // Add some fields and methods
-                const content = document.createElement('div');
-                content.textContent = '- attributes\n+ methods()';
-                classDiagram.appendChild(content);
-                
-                backgroundAnimation.appendChild(classDiagram);
-            }
-            
-            // Create object nodes and inheritance connections
-            const objectNodes = [];
-            
-            // Create nodes (representing objects)
+            // Create circuit lines
             for (let i = 0; i < 15; i++) {
-                const objectNode = document.createElement('div');
-                objectNode.className = 'object-node';
+                // Horizontal lines
+                const hLine = document.createElement('div');
+                hLine.className = 'circuit-line horizontal';
+                hLine.style.top = `${Math.random() * 100}vh`;
+                hLine.style.left = `${Math.random() * 30}vw`;
+                hLine.style.width = `${20 + Math.random() * 50}vw`;
+                hLine.style.animationDelay = `${i * 0.5}s`;
+                backgroundAnimation.appendChild(hLine);
+                
+                // Vertical lines
+                const vLine = document.createElement('div');
+                vLine.className = 'circuit-line vertical';
+                vLine.style.top = `${Math.random() * 30}vh`;
+                vLine.style.left = `${Math.random() * 100}vw`;
+                vLine.style.height = `${20 + Math.random() * 50}vh`;
+                vLine.style.animationDelay = `${i * 0.5}s`;
+                backgroundAnimation.appendChild(vLine);
+            }
+            
+            // Create network graph nodes and connections
+            const nodes = [];
+            
+            // Create nodes
+            for (let i = 0; i < 20; i++) {
+                const node = document.createElement('div');
+                node.className = 'node';
                 const x = 10 + Math.random() * 80;
                 const y = 10 + Math.random() * 80;
-                objectNode.style.left = `${x}vw`;
-                objectNode.style.top = `${y}vh`;
-                objectNode.style.animationDelay = `${Math.random() * 4}s`;
-                backgroundAnimation.appendChild(objectNode);
-                objectNodes.push({ element: objectNode, x, y });
+                node.style.left = `${x}vw`;
+                node.style.top = `${y}vh`;
+                node.style.animationDelay = `${Math.random() * 4}s`;
+                backgroundAnimation.appendChild(node);
+                nodes.push({ element: node, x, y });
             }
             
-            // Create inheritance connections
-            for (let i = 0; i < objectNodes.length; i++) {
-                const sourceNode = objectNodes[i];
+            // Create connections between nodes
+            for (let i = 0; i < nodes.length; i++) {
+                const sourceNode = nodes[i];
                 
-                // Connect to 1-2 random nodes for inheritance
-                const connectionsCount = 1 + Math.floor(Math.random() * 2);
+                // Connect to 1-3 random nodes
+                const connectionsCount = 1 + Math.floor(Math.random() * 3);
                 
                 for (let j = 0; j < connectionsCount; j++) {
                     // Select random target node
-                    const targetIndex = Math.floor(Math.random() * objectNodes.length);
+                    const targetIndex = Math.floor(Math.random() * nodes.length);
                     if (targetIndex !== i) {
-                        const targetNode = objectNodes[targetIndex];
+                        const targetNode = nodes[targetIndex];
                         
                         // Calculate distance and angle
                         const dx = targetNode.x - sourceNode.x;
@@ -670,50 +652,52 @@
                         const distance = Math.sqrt(dx * dx + dy * dy);
                         const angle = Math.atan2(dy, dx) * 180 / Math.PI;
                         
-                        // Create inheritance line
-                        const inheritanceLine = document.createElement('div');
-                        inheritanceLine.className = 'inheritance-line';
-                        inheritanceLine.style.left = `${sourceNode.x}vw`;
-                        inheritanceLine.style.top = `${sourceNode.y}vh`;
-                        inheritanceLine.style.width = `${distance}vw`;
-                        inheritanceLine.style.transform = `rotate(${angle}deg)`;
-                        inheritanceLine.style.animationDelay = `${Math.random() * 5}s`;
-                        backgroundAnimation.appendChild(inheritanceLine);
+                        // Create connection line
+                        const connection = document.createElement('div');
+                        connection.className = 'connection';
+                        connection.style.left = `${sourceNode.x}vw`;
+                        connection.style.top = `${sourceNode.y}vh`;
+                        connection.style.width = `${distance}vw`;
+                        connection.style.transform = `rotate(${angle}deg)`;
+                        connection.style.animationDelay = `${Math.random() * 5}s`;
+                        backgroundAnimation.appendChild(connection);
                     }
                 }
             }
             
-            // Create method calls (animated dots moving between objects)
+            // Create glowing circles
             for (let i = 0; i < 10; i++) {
-                setTimeout(() => {
-                    createMethodCall();
-                }, i * 3000);
-            }
-            
-            function createMethodCall() {
-                const methodCall = document.createElement('div');
-                methodCall.className = 'method-call';
+                const glowCircle = document.createElement('div');
+                glowCircle.className = 'glow-circle';
                 
-                // Random start position
-                const startX = Math.random() * 90;
-                const startY = Math.random() * 90;
+                const size = 50 + Math.random() * 150;
+                glowCircle.style.width = `${size}px`;
+                glowCircle.style.height = `${size}px`;
                 
-                // Random end position
-                const endX = Math.random() * 90;
-                const endY = Math.random() * 90;
+                glowCircle.style.setProperty('--random-x-start', Math.random());
+                glowCircle.style.setProperty('--random-y-start', Math.random());
+                glowCircle.style.setProperty('--random-x-mid1', Math.random());
+                glowCircle.style.setProperty('--random-y-mid1', Math.random());
+                glowCircle.style.setProperty('--random-x-mid2', Math.random());
+                glowCircle.style.setProperty('--random-y-mid2', Math.random());
+                glowCircle.style.setProperty('--random-x-mid3', Math.random());
+                glowCircle.style.setProperty('--random-y-mid3', Math.random());
+                glowCircle.style.setProperty('--random-x-end', Math.random());
+                glowCircle.style.setProperty('--random-y-end', Math.random());
                 
-                methodCall.style.left = `${startX}vw`;
-                methodCall.style.top = `${startY}vh`;
-                methodCall.style.setProperty('--end-x', `${endX - startX}vw`);
-                methodCall.style.setProperty('--end-y', `${endY - startY}vh`);
+                glowCircle.style.setProperty('--random-scale-start', 0.8 + Math.random() * 0.5);
+                glowCircle.style.setProperty('--random-scale-mid', 0.7 + Math.random() * 0.6);
+                glowCircle.style.setProperty('--random-scale-end', 0.8 + Math.random() * 0.5);
                 
-                backgroundAnimation.appendChild(methodCall);
+                glowCircle.style.setProperty('--random-opacity-start', 0.4 + Math.random() * 0.4);
+                glowCircle.style.setProperty('--random-opacity-mid', 0.3 + Math.random() * 0.4);
+                glowCircle.style.setProperty('--random-opacity-end', 0.4 + Math.random() * 0.4);
                 
-                // Remove after animation completes
-                setTimeout(() => {
-                    backgroundAnimation.removeChild(methodCall);
-                    createMethodCall(); // Create a new one
-                }, 6000);
+                const duration = 20 + Math.random() * 30;
+                glowCircle.style.animationDuration = `${duration}s`;
+                glowCircle.style.animationDelay = `${Math.random() * 10}s`;
+                
+                backgroundAnimation.appendChild(glowCircle);
             }
         }
         
@@ -725,8 +709,23 @@
         const sendButton = document.getElementById('sendButton');
         const chatMessages = document.getElementById('chatMessages');
         const chips = document.querySelectorAll('.chip');
+
+        // Function to reset conversation
+        async function resetConversation() {
+            try {
+                const response = await fetch('/reset', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    chatMessages.innerHTML = '<div class="message bot-message">Hello! I\'m your OS Assistant. How can I help you with operating systems today?</div>';
+                }
+            } catch (error) {
+                console.error('Error resetting conversation:', error);
+            }
+        }
         
-        function sendMessage() {
+        async function sendMessage() {
             const message = messageInput.value.trim();
             if (message === '') return;
             
@@ -753,40 +752,41 @@
             chatMessages.appendChild(typingIndicator);
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
-            // Simulate bot response after delay
-            setTimeout(() => {
-                // Remove typing indicator
-                chatMessages.removeChild(typingIndicator);
-                
+            try {
                 // Make API call to backend
-                fetch('/ask', {
+                const response = await fetch('/ask', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ message: message })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Add bot response
-                    const botResponseDiv = document.createElement('div');
-                    botResponseDiv.className = 'message bot-message';
-                    botResponseDiv.textContent = data.answer;
-                    chatMessages.appendChild(botResponseDiv);
-                    
-                    // Scroll to bottom
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // Show error message to user
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'message bot-message';
-                    errorDiv.textContent = 'Sorry, I encountered an error. Please try again.';
-                    chatMessages.appendChild(errorDiv);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
                 });
-            }, 1500);
+                
+                const data = await response.json();
+                
+                // Remove typing indicator
+                chatMessages.removeChild(typingIndicator);
+                
+                // Add bot response
+                const botResponseDiv = document.createElement('div');
+                botResponseDiv.className = 'message bot-message';
+                botResponseDiv.textContent = data.answer;
+                chatMessages.appendChild(botResponseDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error('Error:', error);
+                // Remove typing indicator
+                chatMessages.removeChild(typingIndicator);
+                
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message bot-message';
+                errorDiv.textContent = 'Sorry, I encountered an error. Please try again.';
+                chatMessages.appendChild(errorDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
         
         // Event listeners
@@ -804,6 +804,9 @@
                 messageInput.focus();
             });
         });
+
+        // Reset conversation on page load
+        resetConversation();
     </script>
 </body>
 </html>
