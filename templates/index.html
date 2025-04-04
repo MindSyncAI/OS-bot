@@ -6,6 +6,7 @@
     <title>OS Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.css">
     <style>
         :root {
             /* Dark Theme (Default) */
@@ -362,6 +363,63 @@
             animation: messageSlide 0.3s ease;
         }
 
+        .message.markdown-body {
+            background: var(--bot-message-bg);
+            color: var(--text-color);
+            padding: 15px 20px;
+        }
+
+        .message.markdown-body h1,
+        .message.markdown-body h2,
+        .message.markdown-body h3,
+        .message.markdown-body h4,
+        .message.markdown-body h5,
+        .message.markdown-body h6 {
+            color: var(--primary-color);
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        .message.markdown-body p {
+            margin-bottom: 1em;
+        }
+
+        .message.markdown-body ul,
+        .message.markdown-body ol {
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+
+        .message.markdown-body li {
+            margin-bottom: 0.5em;
+        }
+
+        .message.markdown-body code {
+            background: rgba(0, 206, 201, 0.1);
+            color: var(--primary-color);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+
+        .message.markdown-body pre {
+            background: rgba(0, 206, 201, 0.1);
+            padding: 1em;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .message.markdown-body pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .message.markdown-body blockquote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1em;
+            margin-left: 0;
+            color: var(--secondary-text-color);
+        }
+
         @keyframes messageSlide {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -565,6 +623,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         // Theme Toggle Functionality
         const themeToggleBtn = document.getElementById('themeToggle');
@@ -769,8 +828,8 @@
                 
                 // Add bot response
                 const botResponseDiv = document.createElement('div');
-                botResponseDiv.className = 'message bot-message';
-                botResponseDiv.textContent = data.answer;
+                botResponseDiv.className = 'message bot-message markdown-body';
+                botResponseDiv.innerHTML = marked.parse(data.answer);
                 chatMessages.appendChild(botResponseDiv);
                 
                 // Scroll to bottom
